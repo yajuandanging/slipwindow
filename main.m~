@@ -1,0 +1,35 @@
+clear;  
+M={7,8,9,10};               % 滑动窗口的备选数值
+l=10;                                   %读取7个文件
+for i=1:7
+    ypou=importdata(strcat(pwd,'/you',num2str(i),'.txt'));
+    for j=l:l:length(ypou)
+        ypou_mean(j/l,:)=mean(ypou(j-l+1));
+    end
+    y_mean(:,i)=ypou_mean(1:370/l);
+    dlmwrite(strcat('you',num2str(i),'_mean_',num2str(l),'.txt'),y_mean(:,i),'precision',9);
+end
+%%
+LL=dir();
+LL=LL(3:end-1);
+LL=char(LL.name);
+[status,result]=dos('dir you*mean_6.txt');
+filelist=regexp(result,'\w*?\.txt','match');
+
+
+for f=1:6
+    FilePath=strcat(pwd,'\',filelist{f});
+    data=importdata(FilePath);
+    guiyi_data=guiyi(data);
+    dlmwrite(strcat(pwd,'/guiyi_',filelist{f}),guiyi_data);
+    inputdatalist(:,f)=guiyi_data;
+end
+%%
+for i=1:4
+    MS[i]=slipewindow(M[i],inputdatalist);
+  % MSE 求解出最小的MS[i]
+  
+end 
+%使用最小的MSE的滑动窗口的数据，进行预测
+
+
